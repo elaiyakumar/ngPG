@@ -1,0 +1,54 @@
+ 
+
+<!-- <nav class="navbar navbar-expand-sm bg-light navbar-light">   -->
+<nav class="navbar navbar-expand-sm  bg-info"  style="color: hsl(24, 76%, 80%);">
+
+ 
+  <ul class="navbar-nav">
+    <li class="nav-item"> 
+      <a class="nav-link bg-light " routerLinkActive="active" routerLink="list">List</a>
+    </li>
+    <li class="nav-item">       
+      <a class="nav-link  bg-light " routerLinkActive="active" routerLink="create">Create</a>
+    </li>
+
+    <!-- Dropdown -->
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle bg-light " href="#" id="navbardrop" data-toggle="dropdown">
+        More..
+      </a>
+      <div class="dropdown-menu">         
+        <!-- <a  class="dropdown-item"  routerLinkActive="active" routerLink="create">Create</a> -->
+        <a class="dropdown-item" href="https://www.youtube.com/watch?v=MPuXl1DS1vU&list=PL6n9fhu94yhWNJaDgh0mfae_9xoQ4E_Zj&index=9">Source</a>
+        <a class="dropdown-item" href="http://csharp-video-tutorials.blogspot.com/2018/09/angular-6-tutorial-for-beginners.html">Source Text </a>
+        <a class="dropdown-item" href="https://www.youtube.com/watch?v=AvqP3FblMA8&list=PL6n9fhu94yhWNJaDgh0mfae_9xoQ4E_Zj&index=12">Source Text 12 </a>
+        
+      </div>
+    </li>
+  </ul>
+</nav>
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
+
+<br/> 
+
+<div>
+  Buttons display : 
+   
+  
+  <div class="form-group row" style="margin-left:0px;">  
+    <button type="button" class="btn btn-primary">Primary</button>&nbsp;
+    <button type="button" class="btn btn-success">Success</button>&nbsp;
+    <button type="button" class="btn btn-info">Info</button>&nbsp;
+    <button type="button" class="btn btn-warning">Warning</button>&nbsp;
+    <button type="button" class="btn btn-danger">Danger</button>&nbsp;
+    <button type="button" class="btn btn-link">Link</button>&nbsp;
+    
+    <button type="button" class="btn">Basic</button>&nbsp;
+    <button type="button" class="btn btn-default">Default</button>
+  </div>
+</div>
+ 
+<br/> 
+   

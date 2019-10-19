@@ -1,0 +1,107 @@
+<form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+
+    <div class="card ">
+        <div class="card-header bg-secondary text-white" style="padding-top: 0.25rem; padding-bottom: 0.25rem;">
+            <h6>Create Employee</h6>
+        </div>
+        
+        <div class="card-body">
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="fullName">Full Name</label>
+                <div class="col-sm-8 ">
+                    <input id="fullName" formControlName="fullName" type="text" class="form-control " [ngClass]="{'is-invalid': employeeForm.get('fullName').errors && 
+                                    (employeeForm.get('fullName').touched || employeeForm.get('fullName').dirty)}">
+                    <span class="text-muted" *ngIf="employeeForm.get('fullName').errors && 
+                        (employeeForm.get('fullName').touched || employeeForm.get('fullName').dirty)">
+                        <span *ngIf="employeeForm.get('fullName').errors.required">
+                            Full Name is required </span>
+                            <span *ngIf="employeeForm.get('fullName').errors.minlength  || employeeForm.get('fullName').errors.maxlength">
+                                    Full Name must have minimum of 2 and upto 10 chars.
+                            </span>
+                            
+                    </span>
+                    <label>{{fullNameLength }}</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="email">Email</label>
+                <div class="col-sm-8">
+                    <input id="email" formControlName="email" type="text" class="form-control">
+                </div>
+            </div>
+
+            <div formGroupName="skills">
+                <div class="form-group">
+                    <label class="col-sm-2 col-md-4 control-label" for="skillName">
+                        Skill
+                    </label>
+                    <div class="form-group row" style="margin-left:0px;">
+                        <div class="col-sm-2 col-md-4 col-lg-4 ">
+                            <input type="text" class="form-control" id="skillName" placeholder="Name"
+                                formControlName="skillName">
+                        </div>
+                        <div class="col-sm-2 col-md-4 col-lg-4">
+                            <input type="text" placeholder="Experience in Years" class="form-control"
+                                formControlName="experienceInYears">
+                        </div>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Proficiency</label>
+                    <div class="col-md-8">
+                        <label class="radio-inline">
+                            <input id="proficiency" type="radio" value="beginner"
+                                formControlName="proficiency">&nbsp;Beginner&nbsp;&nbsp;
+                        </label>
+                        <label class="radio-inline">
+                            <input id="proficiency" type="radio" value="intermediate"
+                                formControlName="proficiency">&nbsp;Intermediate&nbsp;&nbsp;
+                        </label>
+                        <label class="radio-inline">
+                            <input id="proficiency" type="radio" value="advanced"
+                                formControlName="proficiency">&nbsp;Advanced&nbsp;&nbsp;
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="card-footer">
+            <div class="container">
+                <button class="btn btn-primary" type="submit">Save</button>&nbsp;&nbsp;
+                <button class="btn btn-primary" type="button" (click)="onLoadClick()"> Load Data</button>&nbsp;&nbsp;
+                <button class="btn btn-primary" type="button" (click)="onLoadPartialClick()"> Load Data
+                    (patchValue)</button>&nbsp;&nbsp;
+                <button class="btn btn-secondary" type="button" (click)="disableChildControl()"> Disable Child Control</button>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<br />
+<div>
+    <table border="1">
+        <tr>
+            <th style="padding: 10px">FormGroup</th>
+            <th style="padding: 10px">FormControl (fullName)</th>
+        </tr>
+        <tr>
+            <td style="padding: 10px">
+                touched : {{ employeeForm.touched }}
+                <br /> dirty : {{ employeeForm.dirty }}
+                <br /> valid : {{ employeeForm.valid }}
+                <br /> Form Values : {{employeeForm.value | json}}
+            </td>
+            <td style="padding: 10px">
+                touched : {{ employeeForm.get('fullName').touched }}
+                <br /> dirty : {{ employeeForm.get('fullName').dirty }}
+                <br /> valid : {{ employeeForm.get('fullName').valid }}
+                <br /> FullName Value : {{employeeForm.get('fullName').value}}
+            </td>
+        </tr>
+    </table>
+</div>
