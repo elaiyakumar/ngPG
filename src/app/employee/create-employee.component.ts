@@ -26,7 +26,7 @@ export class CreateEmployeeComponent implements OnInit {
   validationMessages = {
     'fullName': {
       'required': 'Full Name is required.',
-      'minlength': 'Full Name must be greater than 2 characters.',
+      'minlength': 'Full Name must be greater than 3 characters.',
       'maxlength': 'Full Name must be less than 10 characters.'
     },
     'email': {
@@ -124,8 +124,7 @@ export class CreateEmployeeComponent implements OnInit {
           const messages = this.validationMessages[key];
            this.formErrors[key] =  [];
           for(const errorKey in abstractControl.errors)
-          {
-            
+          {            
             if(errorKey)
             {
               this.formErrors[key] += messages[errorKey] + '  ';
