@@ -27,7 +27,7 @@ export class CreateEmployeeComponent implements OnInit {
     'fullName': {
       'required': 'Full Name is required.',
       'minlength': 'Full Name must be greater than 3 characters.',
-      'maxlength': 'Full Name must be less than 10 characters.'
+      'maxlength': 'Full Name must be less than 6 characters.'
     },
     'email': {
       'required': 'Email is required.'
@@ -45,22 +45,24 @@ export class CreateEmployeeComponent implements OnInit {
 
 
   constructor(private fb: FormBuilder) { }
-
+   
   ngOnInit() {
     this.employeeForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(10)]],
+      fullName: ['', [Validators.required,  Validators.maxLength(6),  Validators.minLength(3)]],
       email: ['', Validators.required],
       skills: this.fb.group({
         skillName: ['', Validators.required],
         experienceInYears: ['', Validators.required],
-        proficiency: ['beginner'],
+        proficiency:  ['', Validators.required]
       })
     });
 
     // Subscribe to valueChanges observable
     this.employeeForm.get('fullName').valueChanges.subscribe(
       (value: string) => {
+        
         this.fullNameLength = value.length;
+        // this.logValidationErrors(this.employeeForm);
       });
 
     // Subscribe to nested form valueChanges i.e skills
@@ -103,35 +105,39 @@ export class CreateEmployeeComponent implements OnInit {
       const abstractControl = this.employeeForm.get(key);
       if (abstractControl instanceof FormGroup) {
         abstractControl.disable();
+        // abstractControl.disabled;
       } else {
 
       }
     });
   }
 
-  logValidationErrors(group : FormGroup) : void {
+  logValidationErrors(group: FormGroup = this.employeeForm): void {
     Object.keys(group.controls).forEach((key: string) => {
-       
+
       const abstractControl = group.get(key);
 
       if (abstractControl instanceof FormGroup) {
-        this.logValidationErrors(abstractControl);       
-      } 
-      else 
-      {
-        if (abstractControl && !abstractControl.valid)
-        {
-          const messages = this.validationMessages[key];
-           this.formErrors[key] =  [];
-          for(const errorKey in abstractControl.errors)
-          {            
-            if(errorKey)
+        this.logValidationErrors(abstractControl);
+      }
+      else {
+        if (abstractControl) {
+          if (!abstractControl.valid && 
+            (abstractControl.touched || abstractControl.dirty))
             {
-              this.formErrors[key] += messages[errorKey] + '  ';
-            }
+              const messages = this.validationMessages[key];
+              this.formErrors[key] = [];
+              for (const errorKey in abstractControl.errors) {
+                if (errorKey) {
+                  //console.log(errorKey + "-->" + messages[errorKey] + " ->(" + key + ") ->" + this.formErrors.fullName);
+                  this.formErrors[key] += messages[errorKey] + ' ... ';
+                }
+              }
+          }
+          else {
+            this.formErrors[key] = [];
           }
         }
-        
       }
     });
   }
