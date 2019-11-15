@@ -6,12 +6,14 @@ import { AppComponent } from './app.component';
 import { CreateEmployeeComponent } from './employee/create-employee.component';
 import { ListEmployeesComponent } from './employee/list-employees.component';
 import { AppRoutingModule } from './app-routing.module';
+import { EmployeeCustomValidatorComponent } from './employee/employee-custom-validator/employee-custom-validator.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CreateEmployeeComponent,
-    ListEmployeesComponent
+    ListEmployeesComponent,
+    EmployeeCustomValidatorComponent
   ],
   imports: [
     BrowserModule,
