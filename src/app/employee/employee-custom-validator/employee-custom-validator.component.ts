@@ -191,7 +191,7 @@ onContactPrefernceChange(selectedValue: string) {
 }
 
 
-  function emailDomain(control: AbstractControl)
+  function emailDomain(control: AbstractControl) :{ [key: string]: any }  | null
   {
     const email : string  = control.value;
     const domain : string  = email.substring(email.lastIndexOf("@") + 1);
