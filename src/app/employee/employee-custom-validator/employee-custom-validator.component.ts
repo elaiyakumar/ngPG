@@ -19,7 +19,7 @@ export class EmployeeCustomValidatorComponent implements OnInit {
     this.employeeForm = this.fb.group({
       fullName: ['', [Validators.required,  Validators.maxLength(6),  Validators.minLength(3)]],
       contactPreference: ['email'],
-      email: ['', [Validators.required, emailDomain]],
+      email: ['', [Validators.required, emailDomain("msn.com")]],
       phone : [''],
       skills: this.fb.group({
         skillName: ['', Validators.required],
@@ -71,7 +71,7 @@ export class EmployeeCustomValidatorComponent implements OnInit {
     },
     'email': {
       'required': 'Email is required.',
-      'emailDomain': 'Email domain should be gmail.com.'
+      'emailDomain': 'Email domain should be msn.com.'
     },   
     'phone': {
       'required': 'phone is required.'
@@ -191,17 +191,18 @@ onContactPrefernceChange(selectedValue: string) {
 }
 
 
-  function emailDomain(control: AbstractControl) :{ [key: string]: any }  | null
+  function emailDomain(domainName : string){ 
+  return (control: AbstractControl) :{ [key: string]: any }  | null =>
   {
     const email : string  = control.value;
     const domain : string  = email.substring(email.lastIndexOf("@") + 1);
-    if ( email ===  "" || domain.toLowerCase() === "gmail.com")
+    if ( email ===  "" || domain.toLowerCase() === domainName)
     {
       return null;
     } 
     else{
       return {"emailDomain" : true };
     }
-
-  }
+  };
+}
   
