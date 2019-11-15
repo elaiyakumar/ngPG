@@ -11,12 +11,52 @@ export class CreateEmployeeComponent implements OnInit {
   employeeForm: FormGroup;
   fullNameLength = 0;
 
+  
+  constructor(private fb: FormBuilder) { }
+   
+  ngOnInit() {
+    
+    this.employeeForm = this.fb.group({
+      fullName: ['', [Validators.required,  Validators.maxLength(6),  Validators.minLength(3)]],
+      contactPreference: ['email'],
+      email: ['', Validators.required],
+      phone : [''],
+      skills: this.fb.group({
+        skillName: ['', Validators.required],
+        experienceInYears: ['', Validators.required],
+        proficiency:  ['', Validators.required]
+      })
+    });
+
+    this.employeeForm.valueChanges.subscribe((data) => {
+      this.logValidationErrors(this.employeeForm);
+    });
+
+  // Subscribe to valueChanges observable
+    this.employeeForm.get('contactPreference').valueChanges.subscribe(
+      (data: string) => {        
+        this.onContactPrefernceChange(data);
+      }); 
+
+    this.employeeForm.get('fullName').valueChanges.subscribe(
+      (value: string) => {        
+        this.fullNameLength = value.length;
+        // this.logValidationErrors(this.employeeForm);
+      });
+
+    this.employeeForm.get('skills').valueChanges.subscribe(value => {
+      console.log("This is valueChanges.subscribe event " + JSON.stringify(value));
+    });
+  }
+
+  
   // This object will hold the messages to be displayed to the user
   // Notice, each key in this object has the same name as the
   // corresponding form control
   formErrors = {
     'fullName': '',
     'email': '',
+    'phone': '',
     'skillName': '',
     'experienceInYears': '',
     'proficiency': ''
@@ -31,6 +71,9 @@ export class CreateEmployeeComponent implements OnInit {
     },
     'email': {
       'required': 'Email is required.'
+    },   
+    'phone': {
+      'required': 'phone is required.'
     },
     'skillName': {
       'required': 'Skill Name is required.',
@@ -44,32 +87,25 @@ export class CreateEmployeeComponent implements OnInit {
   };
 
 
-  constructor(private fb: FormBuilder) { }
-   
-  ngOnInit() {
-    this.employeeForm = this.fb.group({
-      fullName: ['', [Validators.required,  Validators.maxLength(6),  Validators.minLength(3)]],
-      email: ['', Validators.required],
-      skills: this.fb.group({
-        skillName: ['', Validators.required],
-        experienceInYears: ['', Validators.required],
-        proficiency:  ['', Validators.required]
-      })
-    });
+  // If the Selected Radio Button value is "phone", then add the
+// required validator function otherwise remove it
+onContactPrefernceChange(selectedValue: string) {
+  const phoneFormControl = this.employeeForm.get('phone');
+  const emailFormControl = this.employeeForm.get('email');
+  // this.formErrors['phone'] = '';
+  // this.formErrors['email'] = '';
+  
 
-    // Subscribe to valueChanges observable
-    this.employeeForm.get('fullName').valueChanges.subscribe(
-      (value: string) => {
-        
-        this.fullNameLength = value.length;
-        // this.logValidationErrors(this.employeeForm);
-      });
-
-    // Subscribe to nested form valueChanges i.e skills
-    this.employeeForm.get('skills').valueChanges.subscribe(value => {
-      console.log("This is valueChanges.subscribe event " + JSON.stringify(value));
-    });
+  if (selectedValue === 'phone') {
+    phoneFormControl.setValidators(Validators.required);
+    emailFormControl.clearValidators();
+  } else {
+    phoneFormControl.clearValidators();
+    emailFormControl.setValidators(Validators.required);
   }
+  phoneFormControl.updateValueAndValidity();
+  emailFormControl.updateValueAndValidity(); 
+}
 
   onSubmit(): void {
     console.log(this.employeeForm.value);
@@ -77,17 +113,7 @@ export class CreateEmployeeComponent implements OnInit {
     console.log('touched ' + this.employeeForm.touched);
   }
 
-  onLoadClick(): void {
-    // this.employeeForm.setValue({
-    //   fullName: 'EKR',
-    //   email: 'test@test.com',
-    //   skills: {
-    //     skillName: 'Writing',
-    //     experienceInYears: 10,
-    //     proficiency: "intermediate"
-    //   }
-    // });
-    //this.logKeyValuePairs(this.employeeForm);
+  onLoadClick(): void {  
     this.logValidationErrors(this.employeeForm);
     console.log(this.formErrors);
   }
