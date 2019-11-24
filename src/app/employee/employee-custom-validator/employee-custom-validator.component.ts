@@ -6,26 +6,29 @@ import { CustomValidators } from '../../shared/custom.validators';
   selector: 'app-employee-custom-validator',
   templateUrl: './employee-custom-validator.component.html',
   styleUrls: ['./employee-custom-validator.component.css']
-}) 
+})
 export class EmployeeCustomValidatorComponent implements OnInit {
 
   employeeForm: FormGroup;
   fullNameLength = 0;
 
-  
+
   constructor(private fb: FormBuilder) { }
-   
+
   ngOnInit() {
-    
+
     this.employeeForm = this.fb.group({
-      fullName: ['', [Validators.required,  Validators.maxLength(6),  Validators.minLength(3)]],
+      fullName: ['', [Validators.required, Validators.maxLength(6), Validators.minLength(3)]],
       contactPreference: ['email'],
-      email: ['', [Validators.required, CustomValidators.emailDomain("msn.com")]],
-      phone : [''],
+      emailGroup: this.fb.group({
+        email: ['', [Validators.required, CustomValidators.emailDomain("msn.com")]],
+        confirmEmail: ['', Validators.required]
+      }, {validators: matchEmails}),
+      phone: [''],
       skills: this.fb.group({
         skillName: ['', Validators.required],
         experienceInYears: ['', Validators.required],
-        proficiency:  ['', Validators.required]
+        proficiency: ['', Validators.required]
       })
     });
 
@@ -33,30 +36,32 @@ export class EmployeeCustomValidatorComponent implements OnInit {
       this.logValidationErrors(this.employeeForm);
     });
 
-  // Subscribe to valueChanges observable
+    // Subscribe to valueChanges observable
     this.employeeForm.get('contactPreference').valueChanges.subscribe(
-      (data: string) => {        
+      (data: string) => {
         this.onContactPrefernceChange(data);
-      }); 
+      });
 
     this.employeeForm.get('fullName').valueChanges.subscribe(
-      (value: string) => {        
+      (value: string) => {
         this.fullNameLength = value.length;
         // this.logValidationErrors(this.employeeForm);
       });
 
     this.employeeForm.get('skills').valueChanges.subscribe(value => {
-      console.log("This is valueChanges.subscribe event " + JSON.stringify(value));
+      console.log("This is valueChanges.subscribe event of SKILLS " + JSON.stringify(value));
     });
   }
 
-  
+
   // This object will hold the messages to be displayed to the user
   // Notice, each key in this object has the same name as the
   // corresponding form control
   formErrors = {
     'fullName': '',
     'email': '',
+    'confirmEmail': '',
+    'emailGroup' : '',
     'phone': '',
     'skillName': '',
     'experienceInYears': '',
@@ -73,7 +78,13 @@ export class EmployeeCustomValidatorComponent implements OnInit {
     'email': {
       'required': 'Email is required.',
       'emailDomain': 'Email domain should be msn.com.'
-    },   
+    },
+    'confirmEmail': {
+      'required': 'Confirm Email is required.'
+    },
+    'emailGroup': {
+      'emailMismatch': 'Email and Confirm Email is not matching.'
+    },
     'phone': {
       'required': 'phone is required.'
     },
@@ -90,24 +101,30 @@ export class EmployeeCustomValidatorComponent implements OnInit {
 
 
   // If the Selected Radio Button value is "phone", then add the
-// required validator function otherwise remove it
-onContactPrefernceChange(selectedValue: string) {
-  const phoneFormControl = this.employeeForm.get('phone');
-  const emailFormControl = this.employeeForm.get('email');
-  // this.formErrors['phone'] = '';
-  // this.formErrors['email'] = '';
-  
+  // required validator function otherwise remove it
+  onContactPrefernceChange(selectedValue: string) {
+    const phoneFormControl = this.employeeForm.get('phone');
 
-  if (selectedValue === 'phone') {
-    phoneFormControl.setValidators(Validators.required);
-    emailFormControl.clearValidators();
-  } else {
-    phoneFormControl.clearValidators();
-    emailFormControl.setValidators(Validators.required);
+    const emailGroupFormControl = this.employeeForm.get('emailGroup');
+    const emailFormControl = emailGroupFormControl.get('email');
+    const confirmEmailFormControl = emailGroupFormControl.get('confirmEmail');
+    // this.formErrors['phone'] = '';
+    // this.formErrors['email'] = ''; 
+
+    if (selectedValue === 'phone') {
+      phoneFormControl.setValidators(Validators.required);
+      emailFormControl.clearValidators();
+      confirmEmailFormControl.clearValidators();
+    } else {
+      phoneFormControl.clearValidators();
+      emailFormControl.setValidators(Validators.required);
+      confirmEmailFormControl.setValidators(Validators.required);
+    }
+    phoneFormControl.updateValueAndValidity();
+    emailFormControl.updateValueAndValidity();
+    confirmEmailFormControl.updateValueAndValidity();
+
   }
-  phoneFormControl.updateValueAndValidity();
-  emailFormControl.updateValueAndValidity(); 
-}
 
   onSubmit(): void {
     console.log(this.employeeForm.value);
@@ -115,8 +132,8 @@ onContactPrefernceChange(selectedValue: string) {
     console.log('touched ' + this.employeeForm.touched);
   }
 
-  
-  onLoadClick(): void {  
+
+  onLoadClick(): void {
     this.logValidationErrors(this.employeeForm);
     console.log(this.formErrors);
   }
@@ -141,32 +158,33 @@ onContactPrefernceChange(selectedValue: string) {
     });
   }
 
+  
   logValidationErrors(group: FormGroup = this.employeeForm): void {
     Object.keys(group.controls).forEach((key: string) => {
 
       const abstractControl = group.get(key);
-
+      if (abstractControl) {
+        if (!abstractControl.valid &&
+          (abstractControl.touched || abstractControl.dirty)) {
+          const messages = this.validationMessages[key];
+          this.formErrors[key] = [];
+          for (const errorKey in abstractControl.errors) {
+            if (errorKey) {
+              //console.log(errorKey + "-->" + messages[errorKey] + " ->(" + key + ") ->" + this.formErrors.fullName);
+              this.formErrors[key] += messages[errorKey] + ' ... ';
+            }
+          }
+        }
+        else {
+          this.formErrors[key] = [];
+        }
+      }
+      
       if (abstractControl instanceof FormGroup) {
         this.logValidationErrors(abstractControl);
       }
       else {
-        if (abstractControl) {
-          if (!abstractControl.valid && 
-            (abstractControl.touched || abstractControl.dirty))
-            {
-              const messages = this.validationMessages[key];
-              this.formErrors[key] = [];
-              for (const errorKey in abstractControl.errors) {
-                if (errorKey) {
-                  //console.log(errorKey + "-->" + messages[errorKey] + " ->(" + key + ") ->" + this.formErrors.fullName);
-                  this.formErrors[key] += messages[errorKey] + ' ... ';
-                }
-              }
-          }
-          else {
-            this.formErrors[key] = [];
-          }
-        }
+        
       }
     });
   }
@@ -189,4 +207,15 @@ onContactPrefernceChange(selectedValue: string) {
       }
     });
   }
-} 
+}
+
+function matchEmails(group: AbstractControl): { [key: string]: any } | null {
+  const emailControl = group.get('email');
+  const confirmEmailControl = group.get('confirmEmail');
+
+  if (emailControl.value === confirmEmailControl.value || confirmEmailControl.pristine) {
+    return null;
+  } else {
+    return { 'emailMismatch': true };
+  }
+}
