@@ -48,12 +48,12 @@
                         <span class="text-muted" *ngIf="formErrors.email">{{formErrors.email}}</span>
                     </div>
                 </div>
-            
+
                 <div class="form-group">
                     <label class="col-sm-2 control-label" for="confirmEmail">Confirm Email</label>
                     <div class="col-sm-8">
                         <input id="confirmEmail" formControlName="confirmEmail" type="text" class="form-control"
-                            [ngClass]="{'is-invalid': formErrors.confirmEmail.length > 0 ||  formErrors.emailGroup.length > 0 }" 
+                            [ngClass]="{'is-invalid': formErrors.confirmEmail.length > 0 ||  formErrors.emailGroup.length > 0 }"
                             (blur)="logValidationErrors()">
                         <span class="text-muted" *ngIf="formErrors.confirmEmail">{{formErrors.confirmEmail}}</span>
                         <span class="text-muted" *ngIf="formErrors.emailGroup">{{formErrors.emailGroup}}</span>
@@ -70,49 +70,53 @@
                 </div>
             </div>
 
-            <div formGroupName="skills">
-                <div class="form-group">
-                    <label class="col-sm-2 col-md-4 control-label" for="skillName">
-                        Skill
-                    </label>
-                    <div class="form-group row" style="margin-left:0px;">
-                        <div class="col-sm-2 col-md-4 col-lg-4 ">
-                            <input type="text" class="form-control" id="skillName" placeholder="Name"
-                                formControlName="skillName" [ngClass]="{'is-invalid': formErrors.skillName.length > 0}"
-                                (blur)="logValidationErrors()">
+            <div formArrayName="skills">
+                <div formGroupName="0">
+                    <div class="form-group">
+                        <label class="col-sm-2 col-md-4 control-label" for="skillName">
+                            Skill
+                        </label>
+                        <div class="form-group row" style="margin-left:0px;">
+                            <div class="col-sm-2 col-md-4 col-lg-4 ">
+                                <input type="text" class="form-control" id="skillName" placeholder="Name"
+                                    formControlName="skillName"
+                                    [ngClass]="{'is-invalid': formErrors.skillName.length > 0}"
+                                    (blur)="logValidationErrors()">
+                            </div>
+                            <div class="col-sm-2 col-md-4 col-lg-4">
+                                <input type="text" placeholder="Experience in Years" class="form-control"
+                                    formControlName="experienceInYears"
+                                    [ngClass]="{'is-invalid': formErrors.experienceInYears.length > 0}"
+                                    (blur)="logValidationErrors()">
+                            </div>
                         </div>
-                        <div class="col-sm-2 col-md-4 col-lg-4">
-                            <input type="text" placeholder="Experience in Years" class="form-control"
-                                formControlName="experienceInYears"
-                                [ngClass]="{'is-invalid': formErrors.experienceInYears.length > 0}"
-                                (blur)="logValidationErrors()">
+
+                    </div>
+                    <div class="form-group" [ngClass]="{'is-invalid': formErrors.proficiency.length > 0}">
+                        <label class="col-md-2 control-label">Proficiency</label>
+                        <div class="col-md-8">
+                            <label class="radio-inline">
+                                <input id="proficiency" type="radio" value="beginner" formControlName="proficiency"
+                                    (blur)="logValidationErrors()">&nbsp;Beginner&nbsp;&nbsp;
+                            </label>
+                            <label class="radio-inline">
+                                <input id="proficiency" type="radio" value="intermediate" formControlName="proficiency"
+                                    (blur)="logValidationErrors()">&nbsp;Intermediate&nbsp;&nbsp;
+                            </label>
+                            <label class="radio-inline">
+                                <input id="proficiency" type="radio" value="advanced" formControlName="proficiency"
+                                    (blur)="logValidationErrors()">&nbsp;Advanced&nbsp;&nbsp;
+                            </label>
                         </div>
+                        <span class="text-muted" *ngIf="formErrors.proficiency">
+                            {{formErrors.proficiency}}</span>
                     </div>
 
                 </div>
-                <div class="form-group" [ngClass]="{'is-invalid': formErrors.proficiency.length > 0}">
-                    <label class="col-md-2 control-label">Proficiency</label>
-                    <div class="col-md-8">
-                        <label class="radio-inline">
-                            <input id="proficiency" type="radio" value="beginner" formControlName="proficiency"
-                                (blur)="logValidationErrors()">&nbsp;Beginner&nbsp;&nbsp;
-                        </label>
-                        <label class="radio-inline">
-                            <input id="proficiency" type="radio" value="intermediate" formControlName="proficiency"
-                                (blur)="logValidationErrors()">&nbsp;Intermediate&nbsp;&nbsp;
-                        </label>
-                        <label class="radio-inline">
-                            <input id="proficiency" type="radio" value="advanced" formControlName="proficiency"
-                                (blur)="logValidationErrors()">&nbsp;Advanced&nbsp;&nbsp;
-                        </label>
-                    </div>
-                    <span class="text-muted" *ngIf="formErrors.proficiency">
-                        {{formErrors.proficiency}}</span>
-                </div>
-
             </div>
 
         </div>
+
         <div class="card-footer">
             <div class="container">
                 <button class="btn btn-primary" type="submit">Save</button>&nbsp;&nbsp;

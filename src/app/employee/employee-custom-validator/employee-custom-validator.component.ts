@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validator, Validators, AbstractControl } from '@angular/forms'
+import { FormGroup, FormBuilder, Validator, Validators, AbstractControl, FormArray } from '@angular/forms'
 import { CustomValidators } from '../../shared/custom.validators';
 
 @Component({
@@ -25,11 +25,9 @@ export class EmployeeCustomValidatorComponent implements OnInit {
         confirmEmail: ['', Validators.required]
       }, {validators: matchEmails}),
       phone: [''],
-      skills: this.fb.group({
-        skillName: ['', Validators.required],
-        experienceInYears: ['', Validators.required],
-        proficiency: ['', Validators.required]
-      })
+      skills: this.fb.array([
+        this.addSkillFormGroup()
+      ])      
     });
 
     this.employeeForm.valueChanges.subscribe((data) => {
@@ -51,8 +49,18 @@ export class EmployeeCustomValidatorComponent implements OnInit {
     this.employeeForm.get('skills').valueChanges.subscribe(value => {
       console.log("This is valueChanges.subscribe event of SKILLS " + JSON.stringify(value));
     });
+
+  
   }
 
+  addSkillFormGroup() : FormGroup
+    {
+      return this.fb.group({
+        skillName: ['', Validators.required],
+        experienceInYears: ['', Validators.required],
+        proficiency: ['', Validators.required]
+      });
+    }
 
   // This object will hold the messages to be displayed to the user
   // Notice, each key in this object has the same name as the
@@ -183,9 +191,16 @@ export class EmployeeCustomValidatorComponent implements OnInit {
       if (abstractControl instanceof FormGroup) {
         this.logValidationErrors(abstractControl);
       }
-      else {
-        
+      
+      if (abstractControl instanceof FormArray) {
+        for(const control of abstractControl.controls)
+        {
+          if (control instanceof FormGroup) {
+            this.logValidationErrors(control);
+          }         
+        }
       }
+
     });
   }
 
