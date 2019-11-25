@@ -4,12 +4,14 @@ import {RouterModule, Routes} from '@angular/router';
 import { CreateEmployeeComponent } from './employee/create-employee.component';
 import { ListEmployeesComponent } from './employee/list-employees.component';
 import { EmployeeCustomValidatorComponent } from './employee/employee-custom-validator/employee-custom-validator.component';
+import { DynamicFormControlsComponent } from './employee/dynamic-form-controls/dynamic-form-controls.component';
 
 const appRoutes :   Routes = [
   { path: 'list', component : ListEmployeesComponent},
   { path : 'create', component : CreateEmployeeComponent }, 
   { path : 'customValidator', component : EmployeeCustomValidatorComponent },
-  {path : '', redirectTo : '/list', pathMatch : 'full' }
+  { path : 'dynamicControls', component : DynamicFormControlsComponent },
+  {path : '', redirectTo : '/list', pathMatch : 'full' } 
 ];
 
 @NgModule({
