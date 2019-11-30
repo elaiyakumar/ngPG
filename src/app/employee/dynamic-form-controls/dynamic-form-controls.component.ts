@@ -200,10 +200,14 @@ export class DynamicFormControlsComponent implements OnInit {
     // console.log("getErrorMessage >> " + this.employeeForm.get('skills').invalid);
     if(this.formErrors[baseName + '_' + i].length > 0)
     {      
-      return this.formErrors[baseName + '_' + i];  
+      return this.formErrors[baseName + '_' + i] + " formControlName(" + baseName + '_' + i + ")";  
     }   
     return "";
   } 
+
+  removeSkillButtonClick(skillGroupIndex: number): void {
+    (<FormArray>this.employeeForm.get('skills')).removeAt(skillGroupIndex);
+  }
 
   // If the Selected Radio Button value is "phone", then add the
   // required validator function otherwise remove it
