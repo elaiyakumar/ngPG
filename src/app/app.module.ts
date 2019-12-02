@@ -10,6 +10,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { EmployeeCustomValidatorComponent } from './employee/employee-custom-validator/employee-custom-validator.component';
 import { DynamicFormControlsComponent } from './employee/dynamic-form-controls/dynamic-form-controls.component';
 import { EmployeeService } from './employee/employee.service';
+import { HomeComponent } from './home.component';
+import { PageNotFoundComponent } from './page-not-found.component';
 
  
 
@@ -19,7 +21,9 @@ import { EmployeeService } from './employee/employee.service';
     CreateEmployeeComponent,
     ListEmployeesComponent,
     EmployeeCustomValidatorComponent,
-    DynamicFormControlsComponent
+    DynamicFormControlsComponent,
+    HomeComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
