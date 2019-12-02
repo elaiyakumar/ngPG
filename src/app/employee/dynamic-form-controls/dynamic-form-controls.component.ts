@@ -18,7 +18,7 @@ export class DynamicFormControlsComponent implements OnInit {
   employeeForm: FormGroup;
   fullNameLength = 0;
   employee: IEmployee;
-
+  pageTitle : string;
 
   // This object will hold the messages to be displayed to the user
   // Notice, each key in this object has the same name as the
@@ -115,6 +115,18 @@ export class DynamicFormControlsComponent implements OnInit {
       const empId = +params.get('id');
       if (empId) {
         this.getEmployee(empId);
+        this.pageTitle = "Edit Employee";
+      }
+      else {
+        this.pageTitle = "Add Employee";
+        this.employee = {
+          id: null,
+          fullName: '',
+          contactPreference: '',
+          email: '',
+          phone: null,
+          skills: []
+        };
       }
     });
 
@@ -301,12 +313,19 @@ export class DynamicFormControlsComponent implements OnInit {
 
     this.mapFormValuesToEmployeeModel();
 
-    var a = this.employee;
+    if (this.employee.id) {
+      this.employeeService.updateEmployee(this.employee).subscribe(
+        () => this.router.navigate(['list']),
+        (err: any) => console.log(err)
+      );
+    }
+    else {
+      this.employeeService.addEmployee(this.employee).subscribe(
+        () => this.router.navigate(['list']),
+        (err: any) => console.log(err)
+      );
 
-    this.employeeService.updateEmployee(this.employee).subscribe(
-      () => this.router.navigate(['list']),
-      (err: any) => console.log(err)
-    );
+    }
 
   }
 
@@ -318,7 +337,7 @@ export class DynamicFormControlsComponent implements OnInit {
 
     var skills = []
     let index = 0;
-    for (const skill of this.employeeForm.value.skills) {       
+    for (const skill of this.employeeForm.value.skills) {
       skills.push(
         {
           "skillName": skill["skillName_" + index],

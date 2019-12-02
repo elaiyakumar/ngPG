@@ -42,6 +42,25 @@
           "proficiency": "advanced"
         }
       ]
+    },
+    {
+      "id": 3,
+      "fullName": "Jack",
+      "contactPreference": "email",
+      "email": "jack@msn.com",
+      "phone": "999090",
+      "skills": [
+        {
+          "skillName": "VB",
+          "experienceInYears": "",
+          "proficiency": "intermediate"
+        },
+        {
+          "skillName": "Java",
+          "experienceInYears": "",
+          "proficiency": "advanced"
+        }
+      ]
     }
   ]
 }
