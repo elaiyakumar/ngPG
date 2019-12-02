@@ -9,6 +9,7 @@ import { DynamicFormControlsComponent } from './employee/dynamic-form-controls/d
 const appRoutes :   Routes = [
   { path: 'list', component : ListEmployeesComponent},
   { path : 'create', component : CreateEmployeeComponent }, 
+  { path: 'edit/:id', component: DynamicFormControlsComponent },
   { path : 'customValidator', component : EmployeeCustomValidatorComponent },
   { path : 'dynamicControls', component : DynamicFormControlsComponent },
   {path : '', redirectTo : '/list', pathMatch : 'full' } 

@@ -99,7 +99,7 @@
         </div>
         <div class="card-footer">
             <div class="container">
-                <button class="btn btn-primary" type="submit">Save</button>&nbsp;&nbsp;
+                <button class="btn btn-primary" type="submit"  [disabled]="employeeForm.invalid">Save</button>&nbsp;&nbsp;
                 <button class="btn btn-primary" type="button" (click)="onLoadClick()"> Load Data</button>&nbsp;&nbsp;
                 <button class="btn btn-primary" type="button" (click)="onLoadPartialClick()"> Load Data
                     (patchValue)</button>&nbsp;&nbsp;

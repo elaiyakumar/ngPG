@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validator, Validators } from '@angular/forms'
+import { ActivatedRoute } from '@angular/router';
+import { EmployeeService } from './employee.service';
+import { IEmployee } from './IEmployee';
+import { CustomValidators } from '../shared/custom.validators';
 
 @Component({
   selector: 'app-create-employee',
@@ -12,14 +16,16 @@ export class CreateEmployeeComponent implements OnInit {
   fullNameLength = 0;
 
   
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder,
+                private route : ActivatedRoute,
+                private _employeeService: EmployeeService) { }
    
   ngOnInit() {
     
     this.employeeForm = this.fb.group({
       fullName: ['', [Validators.required,  Validators.maxLength(6),  Validators.minLength(3)]],
       contactPreference: ['email'],
-      email: ['', Validators.required],
+      email: ['',  [Validators.required, CustomValidators.emailDomain("msn.com")]],
       phone : [''],
       skills: this.fb.group({
         skillName: ['', Validators.required],
@@ -47,9 +53,41 @@ export class CreateEmployeeComponent implements OnInit {
     this.employeeForm.get('skills').valueChanges.subscribe(value => {
       console.log("This is valueChanges.subscribe event " + JSON.stringify(value));
     });
+
+    this.route.paramMap.subscribe(params => {
+      const empId = +params.get('id');
+      if (empId) {
+        this.getEmployee(empId);
+      }
+    });
+
+    this.employeeForm.patchValue({
+      fullName: 'EKR',
+      email: 'Elaiya@msn1.com'
+    });
+
   }
 
+  getEmployee(id:number)
+  {
+    this._employeeService.getEmployee(id).subscribe(
+      (employee : IEmployee) => this.editEmployee(employee),
+      (err : any) => console.log(err)
+    );
+  }
   
+  editEmployee(employee : IEmployee )
+  {
+    this.employeeForm.patchValue({
+      fullName: employee.fullName,
+      contactPreference: employee.contactPreference,
+      emailGroup: {
+        email: employee.email,
+        confirmEmail: employee.email
+      },
+      phone: employee.phone
+    });
+  }
   // This object will hold the messages to be displayed to the user
   // Notice, each key in this object has the same name as the
   // corresponding form control
@@ -70,7 +108,8 @@ export class CreateEmployeeComponent implements OnInit {
       'maxlength': 'Full Name must be less than 6 characters.'
     },
     'email': {
-      'required': 'Email is required.'
+      'required': 'Email is required.',
+      'emailDomain': 'Email domain should be msn.com.'
     },   
     'phone': {
       'required': 'phone is required.'
@@ -149,7 +188,7 @@ onContactPrefernceChange(selectedValue: string) {
       else {
         if (abstractControl) {
           if (!abstractControl.valid && 
-            (abstractControl.touched || abstractControl.dirty))
+            (abstractControl.touched || abstractControl.dirty || abstractControl.value !== ""))
             {
               const messages = this.validationMessages[key];
               this.formErrors[key] = [];
