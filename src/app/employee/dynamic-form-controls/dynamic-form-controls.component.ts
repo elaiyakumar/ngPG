@@ -5,6 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { EmployeeService } from '../employee.service';
 import { IEmployee } from '../IEmployee';
 import { ISkill } from '../ISkill';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-dynamic-form-controls',
@@ -15,8 +17,9 @@ export class DynamicFormControlsComponent implements OnInit {
 
   employeeForm: FormGroup;
   fullNameLength = 0;
+  employee: IEmployee;
 
-  
+
   // This object will hold the messages to be displayed to the user
   // Notice, each key in this object has the same name as the
   // corresponding form control
@@ -26,7 +29,7 @@ export class DynamicFormControlsComponent implements OnInit {
     'confirmEmail': '',
     'emailGroup': '',
     'phone': '',
-    'skillName': '',    
+    'skillName': '',
     'experienceInYears': '',
     'proficiency': ''
   };
@@ -64,9 +67,11 @@ export class DynamicFormControlsComponent implements OnInit {
 
 
 
-  constructor(private fb: FormBuilder,  
-    private route : ActivatedRoute,
-    private _employeeService: EmployeeService) { } 
+
+  constructor(private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private employeeService: EmployeeService,
+    private router: Router) { }
 
   ngOnInit() {
 
@@ -114,17 +119,18 @@ export class DynamicFormControlsComponent implements OnInit {
     });
 
   }  // close ngOnInit()
-  
-  getEmployee(id:number)
-  {
-    this._employeeService.getEmployee(id).subscribe(
-      (employee : IEmployee) => this.editEmployee(employee),
-      (err : any) => console.log(err)
+
+  getEmployee(id: number) {
+    this.employeeService.getEmployee(id).subscribe(
+      (employee: IEmployee) => {
+        this.editEmployee(employee),
+          this.employee = employee;
+      },
+      (err: any) => console.log(err)
     );
   }
-  
-  editEmployee(employee : IEmployee )
-  {
+
+  editEmployee(employee: IEmployee) {
     this.employeeForm.patchValue({
       fullName: employee.fullName,
       contactPreference: employee.contactPreference,
@@ -137,46 +143,43 @@ export class DynamicFormControlsComponent implements OnInit {
     this.employeeForm.setControl('skills', this.setExistingSkills(employee.skills));
 
   }
-  
-  setExistingSkills(skillSets: ISkill[]): FormArray 
-  {
-    const formArray = new FormArray([]);    
-    let  i = (<FormArray>this.employeeForm.get('skills')).length -1 ;
-    i = i <0 ? 0 : i; 
 
-    skillSets.forEach(s => {      
+  setExistingSkills(skillSets: ISkill[]): FormArray {
+    const formArray = new FormArray([]);
+    let i = (<FormArray>this.employeeForm.get('skills')).length - 1;
+    i = i < 0 ? 0 : i;
+
+    skillSets.forEach(s => {
       let skillName = "skillName_" + i;
-      this.formErrors['skillName_' + i] = '' ;
+      this.formErrors['skillName_' + i] = '';
 
       formArray.push(this.fb.group({
         [skillName]: [s.skillName, Validators.required],
-         experienceInYears: s.experienceInYears ,
+        experienceInYears: s.experienceInYears,
         proficiency: [s.proficiency, Validators.required]
       }));
       i = i + 1;
-    });  
-    
+    });
+
     return formArray;
   }
 
-  addSkillButtonClick(): void 
-{
-    let  i = (<FormArray>this.employeeForm.get('skills')).length;
+  addSkillButtonClick(): void {
+    let i = (<FormArray>this.employeeForm.get('skills')).length;
     const group = this.addSkillFormGroup(i);
     (<FormArray>this.employeeForm.get('skills')).push(group);
   }
 
-  addSkillFormGroup(i): FormGroup 
-  {
+  addSkillFormGroup(i): FormGroup {
     var skillName = "skillName_" + i;
-    this.formErrors['skillName_' + i] = '' ;
+    this.formErrors['skillName_' + i] = '';
     // var experienceInYears = "experienceInYears_" + i;
     // var proficiency = "proficiency_" + i;    
 
     return this.fb.group({
       [skillName]: ['', Validators.required],
-       experienceInYears : [''],
-       proficiency : ['', Validators.required]
+      experienceInYears: [''],
+      proficiency: ['', Validators.required]
     });
 
   }
@@ -189,30 +192,28 @@ export class DynamicFormControlsComponent implements OnInit {
 
       const abstractControl = group.get(key);
 
-      if(abstractControl instanceof FormArray) {console.log("AbstractControl is FormArray with key = " + key );}
-      if(abstractControl instanceof FormGroup) {console.log("AbstractControl is FormGroup with key = " + key );}
-      
-      if (abstractControl && !(abstractControl instanceof FormArray)) 
-      {
+      if (abstractControl instanceof FormArray) { console.log("AbstractControl is FormArray with key = " + key); }
+      if (abstractControl instanceof FormGroup) { console.log("AbstractControl is FormGroup with key = " + key); }
+
+      if (abstractControl && !(abstractControl instanceof FormArray)) {
         console.log(key + " >> ABOVE IF [abstractControl.valid] ");
-         
+
         if (!abstractControl.valid &&
           (abstractControl.touched || abstractControl.dirty || abstractControl.value !== '')) {
-          
-            let rootKey = key;
-            if(key.includes("_")) 
-            {
-              rootKey = key.split("_")[0];
-            }
+
+          let rootKey = key;
+          if (key.includes("_")) {
+            rootKey = key.split("_")[0];
+          }
 
           const messages = this.validationMessages[rootKey];
           this.formErrors[key] = [];
-          console.log("aControl.value >> " + abstractControl.value  + "messages >> " + messages + " key >> " + key + " rootKey >> " + rootKey + " >> " + group.controls);
-          
+          console.log("aControl.value >> " + abstractControl.value + "messages >> " + messages + " key >> " + key + " rootKey >> " + rootKey + " >> " + group.controls);
+
 
           for (const errorKey in abstractControl.errors) {
             if (errorKey) {
-              console.log(errorKey + "-->" + messages[errorKey] + " ==>(" + key + ") ==>" );
+              console.log(errorKey + "-->" + messages[errorKey] + " ==>(" + key + ") ==>");
               this.formErrors[key] += messages[errorKey] + ' ... ';
             }
           }
@@ -220,7 +221,7 @@ export class DynamicFormControlsComponent implements OnInit {
         else {
           this.formErrors[key] = [];
         }
-      
+
       }
 
       if (abstractControl instanceof FormGroup) {
@@ -238,34 +239,28 @@ export class DynamicFormControlsComponent implements OnInit {
 
     });
   }
-  
-  getInvalidClass(baseName : string ,i : string)
-  {  
-    if(this.formErrors[baseName + '_' + i].length > 0)
-    {
-      return "is-invalid";  
+
+  getInvalidClass(baseName: string, i: string) {
+    if (this.formErrors[baseName + '_' + i].length > 0) {
+      return "is-invalid";
     }
     return "";
-  } 
+  }
 
-  isInvalid(baseName : string ,i : string)
-  {
-    if(this.formErrors[baseName + '_' + i].length > 0)
-    {  
-      return true;  
-    } 
+  isInvalid(baseName: string, i: string) {
+    if (this.formErrors[baseName + '_' + i].length > 0) {
+      return true;
+    }
     return false;
-  } 
+  }
 
-  getErrorMessage(baseName : string ,i : string)
-  {
+  getErrorMessage(baseName: string, i: string) {
     // console.log("getErrorMessage >> " + this.employeeForm.get('skills').invalid);
-    if(this.formErrors[baseName + '_' + i].length > 0)
-    {      
-      return this.formErrors[baseName + '_' + i] + " formControlName(" + baseName + '_' + i + ")";  
-    }   
+    if (this.formErrors[baseName + '_' + i].length > 0) {
+      return this.formErrors[baseName + '_' + i] + " formControlName(" + baseName + '_' + i + ")";
+    }
     return "";
-  } 
+  }
 
   removeSkillButtonClick(skillGroupIndex: number): void {
     const skillsFormArray = <FormArray>this.employeeForm.get('skills');
@@ -299,12 +294,42 @@ export class DynamicFormControlsComponent implements OnInit {
     emailFormControl.updateValueAndValidity();
     confirmEmailFormControl.updateValueAndValidity();
 
-  }  
-  
+  }
+
   onSubmit(): void {
-    console.log(this.employeeForm.value);
-    console.log(this.employeeForm);
-    console.log('touched ' + this.employeeForm.touched);
+    console.log("onSubmit clicked");
+
+    this.mapFormValuesToEmployeeModel();
+
+    var a = this.employee;
+
+    this.employeeService.updateEmployee(this.employee).subscribe(
+      () => this.router.navigate(['list']),
+      (err: any) => console.log(err)
+    );
+
+  }
+
+  mapFormValuesToEmployeeModel() {
+    this.employee.fullName = this.employeeForm.value.fullName;
+    this.employee.contactPreference = this.employeeForm.value.contactPreference;
+    this.employee.email = this.employeeForm.value.emailGroup.email;
+    this.employee.phone = this.employeeForm.value.phone;
+
+    var skills = []
+    let index = 0;
+    for (const skill of this.employeeForm.value.skills) {       
+      skills.push(
+        {
+          "skillName": skill["skillName_" + index],
+          "experienceInYears": skill["experienceInYears"],
+          "proficiency": skill["proficiency"]
+        });
+
+      index++;
+    }
+
+    this.employee.skills = skills;
   }
 
   onLoadClick(): void {
@@ -356,8 +381,8 @@ function matchEmails(group: AbstractControl): { [key: string]: any } | null {
   const emailControl = group.get('email');
   const confirmEmailControl = group.get('confirmEmail');
 
-  if (emailControl.value === confirmEmailControl.value || 
-    ( confirmEmailControl.pristine && confirmEmailControl.value === "")) {
+  if (emailControl.value === confirmEmailControl.value ||
+    (confirmEmailControl.pristine && confirmEmailControl.value === "")) {
     return null;
   } else {
     return { 'emailMismatch': true };
