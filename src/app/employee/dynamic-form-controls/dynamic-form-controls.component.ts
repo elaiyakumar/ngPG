@@ -4,6 +4,7 @@ import { CustomValidators } from '../../shared/custom.validators';
 import { ActivatedRoute } from '@angular/router';
 import { EmployeeService } from '../employee.service';
 import { IEmployee } from '../IEmployee';
+import { ISkill } from '../ISkill';
 
 @Component({
   selector: 'app-dynamic-form-controls',
@@ -113,11 +114,6 @@ export class DynamicFormControlsComponent implements OnInit {
     });
 
   }  // close ngOnInit()
-
-  // ngAfterViewInit()
-  // { 
-  //   this.logValidationErrors(this.employeeForm);
-  // }
   
   getEmployee(id:number)
   {
@@ -138,11 +134,33 @@ export class DynamicFormControlsComponent implements OnInit {
       },
       phone: employee.phone
     });
+    this.employeeForm.setControl('skills', this.setExistingSkills(employee.skills));
+
   }
   
+  setExistingSkills(skillSets: ISkill[]): FormArray 
+  {
+    const formArray = new FormArray([]);    
+    let  i = (<FormArray>this.employeeForm.get('skills')).length -1 ;
+    i = i <0 ? 0 : i; 
+
+    skillSets.forEach(s => {      
+      let skillName = "skillName_" + i;
+      this.formErrors['skillName_' + i] = '' ;
+
+      formArray.push(this.fb.group({
+        [skillName]: [s.skillName, Validators.required],
+         experienceInYears: s.experienceInYears ,
+        proficiency: [s.proficiency, Validators.required]
+      }));
+      i = i + 1;
+    });  
+    
+    return formArray;
+  }
 
   addSkillButtonClick(): void 
-  {
+{
     let  i = (<FormArray>this.employeeForm.get('skills')).length;
     const group = this.addSkillFormGroup(i);
     (<FormArray>this.employeeForm.get('skills')).push(group);
@@ -250,7 +268,10 @@ export class DynamicFormControlsComponent implements OnInit {
   } 
 
   removeSkillButtonClick(skillGroupIndex: number): void {
-    (<FormArray>this.employeeForm.get('skills')).removeAt(skillGroupIndex);
+    const skillsFormArray = <FormArray>this.employeeForm.get('skills');
+    skillsFormArray.removeAt(skillGroupIndex);
+    skillsFormArray.markAsDirty();
+    skillsFormArray.markAsTouched();
   }
 
   // If the Selected Radio Button value is "phone", then add the

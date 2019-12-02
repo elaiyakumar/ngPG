@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validator, Validators } from '@angular/forms'
+import { FormGroup, FormBuilder, Validator, Validators, FormArray } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router';
 import { EmployeeService } from './employee.service';
 import { IEmployee } from './IEmployee';
 import { CustomValidators } from '../shared/custom.validators';
+import { ISkill } from './ISkill';
 
 @Component({
   selector: 'app-create-employee',
@@ -87,6 +88,22 @@ export class CreateEmployeeComponent implements OnInit {
       },
       phone: employee.phone
     });
+
+    this.employeeForm.setControl('skills', this.setExistingSkills(employee.skills));
+  }
+
+  setExistingSkills(skillSets: ISkill[]): FormArray 
+  {
+    const formArray = new FormArray([]);
+    skillSets.forEach(s => {
+      formArray.push(this.fb.group({
+        skillName: s.skillName,
+        experienceInYears: s.experienceInYears,
+        proficiency: s.proficiency
+      }));
+    });  
+    
+    return formArray;
   }
   // This object will hold the messages to be displayed to the user
   // Notice, each key in this object has the same name as the
