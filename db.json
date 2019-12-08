@@ -61,6 +61,25 @@
           "proficiency": "advanced"
         }
       ]
+    },
+    {
+      "id": 4,
+      "fullName": "EKR",
+      "contactPreference": "email",
+      "email": "EKR@msn.com",
+      "phone": "000000",
+      "skills": [
+        {
+          "skillName": "ng",
+          "experienceInYears": "",
+          "proficiency": "advanced"
+        },
+        {
+          "skillName": "c#",
+          "experienceInYears": "",
+          "proficiency": "advanced"
+        }
+      ]
     }
   ]
 }

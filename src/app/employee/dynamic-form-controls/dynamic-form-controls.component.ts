@@ -66,8 +66,6 @@ export class DynamicFormControlsComponent implements OnInit {
   };
 
 
-
-
   constructor(private fb: FormBuilder,
     private route: ActivatedRoute,
     private employeeService: EmployeeService,
@@ -308,6 +306,13 @@ export class DynamicFormControlsComponent implements OnInit {
 
   }
 
+  gotoList() {
+    this.router.navigate(['list'])
+  }
+
+  gotoCreateEmployeeComponent()  {
+    this.router.navigate(['create'])
+  }
   onSubmit(): void {
     console.log("onSubmit clicked");
 

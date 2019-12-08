@@ -1,9 +1,9 @@
 <h4>Dynamic Form Controls</h4>
-<a routerLink="/list"> < Back to Employees List  </a>
+<button type="button" class="btn btn-link"  (click)="gotoList()"> << Back to Employees List</button>&nbsp; 
 <div>
     Adding controls to form dynamically. --> ng g c employee/DynamicFormControls --skipTests
     <br>"Required" validation Error message to dynamically added controls. Try adding skills click "Add Skill" button."
-    <br>This is clone of <a routerLink="../create">CreateEmployeeComponent</a> and modified to show validation messages specific to added control i.e "Skill". 
+    <br>This is clone of <button type="button" class="btn btn-link"  (click)="gotoCreateEmployeeComponent()">CreateEmployeeComponent</button> and modified to show validation messages specific to added control i.e "Skill". 
     
 </div>
 
