@@ -9,6 +9,7 @@ const appRoutes :   Routes = [
   // {path : '', redirectTo : '/list', pathMatch : 'full' } 
   // redirect to the home route if the client side route path is empty
   { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'employees', loadChildren: './employee/employee.module#EmployeeModule' },
   // wild card route
   { path: '**', component: PageNotFoundComponent }
 ];

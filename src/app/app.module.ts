@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing.module';
-import { EmployeeModule } from './employee/employee.module';
+
 import { EmployeeService } from './employee/employee.service';
 
 import { AppComponent } from './app.component';
@@ -20,8 +20,7 @@ import { PageNotFoundComponent } from './page-not-found.component';
     PageNotFoundComponent
   ],
   imports: [
-    BrowserModule, 
-    EmployeeModule , 
+    BrowserModule,      
     AppRoutingModule,
     HttpClientModule        
   ],

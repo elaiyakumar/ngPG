@@ -9,16 +9,11 @@ import { DynamicFormControlsComponent } from './dynamic-form-controls/dynamic-fo
 
 
 const appRoutes: Routes = [
-  {
-    path: 'employees',
-    children:[
-      { path: '', component: ListEmployeesComponent },
-      { path: 'create', component: CreateEmployeeComponent },
-      { path: 'edit/:id', component: DynamicFormControlsComponent },
-      { path: 'customValidator', component: EmployeeCustomValidatorComponent },
-      { path: 'dynamicControls', component: DynamicFormControlsComponent }
-    ]
-  }
+  { path: '', component: ListEmployeesComponent },
+  { path: 'create', component: CreateEmployeeComponent },
+  { path: 'edit/:id', component: DynamicFormControlsComponent },
+  { path: 'customValidator', component: EmployeeCustomValidatorComponent },
+  { path: 'dynamicControls', component: DynamicFormControlsComponent }
 ];
 
 @NgModule({
