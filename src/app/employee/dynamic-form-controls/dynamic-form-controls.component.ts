@@ -307,12 +307,13 @@ export class DynamicFormControlsComponent implements OnInit {
   }
 
   gotoList() {
-    this.router.navigate(['list'])
+    this.router.navigate(['employees'])
   }
 
   gotoCreateEmployeeComponent()  {
-    this.router.navigate(['create'])
+    this.router.navigate(['employees/create'])
   }
+  
   onSubmit(): void {
     console.log("onSubmit clicked");
 
@@ -320,7 +321,7 @@ export class DynamicFormControlsComponent implements OnInit {
 
     if (this.employee.id) {
       this.employeeService.updateEmployee(this.employee).subscribe(
-        () => this.router.navigate(['list']),
+        () => this.router.navigate(['employees']),
         (err: any) => console.log(err)
       );
     }
